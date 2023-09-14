@@ -4,6 +4,7 @@
 #include "HittableList.h"
 #include "Sphere.h"
 #include "Material.h"
+#include "BVH.h"
 
 int main()
 {
@@ -55,9 +56,11 @@ int main()
 	std::shared_ptr<Material> metal = std::make_shared<Metal>(glm::vec4(0.7f, 0.6f, 0.5f, 1.0f), 0);
 	world.Add(std::make_shared<Sphere>(glm::vec3(4.0f, 1.0f, 0.0f), 1.0f, metal));
 
+	world = HittableList(std::make_shared<BVHNode>(world));
+
 	Camera camera;
 
-#if 0 // High res toggle
+#if 1 // High res toggle
 	camera.ImageWidth = 1920;
 	camera.ImageHeight = 1080;
 #else

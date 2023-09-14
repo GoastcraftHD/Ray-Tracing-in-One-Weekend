@@ -17,12 +17,14 @@ inline double RandomFloat(float min, float max) { return min + (max - min) * Ran
 inline glm::vec4 RandomColor() { return glm::vec4(RandomFloat(), RandomFloat(), RandomFloat(), 1.0f); }
 inline glm::vec4 RandomColor(float min, float max) { return glm::vec4(RandomFloat(min, max), RandomFloat(min, max), RandomFloat(min, max), 1.0f); }
 
-inline glm::vec3 Random()
+inline int RandomInt(int min, int max) { return static_cast<int>(RandomFloat(min, max + 1)); }
+
+inline glm::vec3 RandomVector()
 {
 	return glm::vec3(RandomFloat(), RandomFloat(), RandomFloat());
 }
 
-inline glm::vec3 Random(float min, float max)
+inline glm::vec3 RandomVector(float min, float max)
 {
 	return glm::vec3(RandomFloat(min, max), RandomFloat(min, max), RandomFloat(min, max));
 }
@@ -47,7 +49,7 @@ inline glm::vec3 RandomInUnitSphere()
 {
 	while (true)
 	{
-		glm::vec3 p = Random(-1, 1);
+		glm::vec3 p = RandomVector(-1, 1);
 
 		if (glm::length2(p) < 1)
 			return p;

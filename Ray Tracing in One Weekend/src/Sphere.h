@@ -5,11 +5,25 @@
 class Sphere : public Hittable
 {
 public:
-	Sphere(const glm::vec3& center, float radius, std::shared_ptr<Material> material) : m_Center(center), m_Radius(radius), m_Material(material), m_IsMoving(false) {}
-
-	Sphere(const glm::vec3& fromCenter, const glm::vec3& toCenter2, float radius, std::shared_ptr<Material> material) : m_Center(fromCenter), m_Radius(radius), m_Material(material), m_IsMoving(true)
+	Sphere(const glm::vec3& center, float radius, std::shared_ptr<Material> material) : m_Center(center), m_Radius(radius), m_Material(material), m_IsMoving(false)
 	{
-		m_MoveVector = toCenter2 - fromCenter;
+		glm::vec3 rvec = glm::vec3(radius, radius, radius);
+		m_Bbox = AABB(m_Center - rvec, m_Center + rvec);
+	}
+
+	Sphere(const glm::vec3& fromCenter, const glm::vec3& toCenter, float radius, std::shared_ptr<Material> material) : m_Center(fromCenter), m_Radius(radius), m_Material(material), m_IsMoving(true)
+	{
+		glm::vec3 rvec = glm::vec3(radius, radius, radius);
+		AABB box1(fromCenter - rvec, fromCenter + rvec);
+		AABB box2(toCenter - rvec, toCenter + rvec);
+		m_Bbox = AABB(box1, box2);
+
+		m_MoveVector = toCenter - fromCenter;
+	}
+
+	AABB BoundingBox() const override
+	{
+		return m_Bbox;
 	}
 
 	bool Hit(const Ray& ray, Interval rayT, HitRecord& hit) const override
@@ -53,6 +67,7 @@ private:
 	std::shared_ptr<Material> m_Material;
 	bool m_IsMoving;
 	glm::vec3 m_MoveVector;
+	AABB m_Bbox;
 
 	glm::vec3 Center(float time) const
 	{
