@@ -10,7 +10,7 @@
 const float Infinity = std::numeric_limits<float>::infinity();
 const float Pi = 3.1415926535897932385f;
 
-inline double RandomFloat() { return rand() / (RAND_MAX + 1.0); }
+inline double RandomFloat() { return rand() / (RAND_MAX + 1.0f); }
 inline double RandomFloat(float min, float max) { return min + (max - min) * RandomFloat(); }
 
 // Random Color with the alpha channel set to always be 1

@@ -106,11 +106,29 @@ void Earth(Camera camera)
 	camera.Render(HittableList(globe));
 }
 
+void TwoPerlinSpheres(Camera camera)
+{
+	HittableList world;
+
+	std::shared_ptr<NoiseTexture> pertext = std::make_shared<NoiseTexture>(3.0f);
+	world.Add(std::make_shared<Sphere>(glm::vec3(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(pertext)));
+	world.Add(std::make_shared<Sphere>(glm::vec3(0.0f, 2.0f, 0.0f), 2.0f, std::make_shared<Lambertian>(pertext)));
+
+	camera.VerticalFOV = 20.0f;
+	camera.LookFrom = glm::vec3(13.0f, 2.0f, 3.0f);
+	camera.LookAt = glm::vec3(0.0f, 0.0f, 0.0f);
+	camera.ViewUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+	camera.DefocusAngle = 0.0f;
+	
+	camera.Render(world);
+}
+
 int main()
 {
 	Camera camera;
 
-#if 1 // High res toggle
+#if 0 // High res toggle
 	camera.ImageWidth = 1920;
 	camera.ImageHeight = 1080;
 #else
@@ -121,10 +139,11 @@ int main()
 	camera.SamplesPerPixel = 100;
 	camera.MaxBounces = 10;
 
-	switch (3)
+	switch (4)
 	{
 		case 1: RandomSpheres(camera); break;
 		case 2: TwoSpheres(camera); break;
 		case 3: Earth(camera); break;
+		case 4: TwoPerlinSpheres(camera); break;
 	}
 }

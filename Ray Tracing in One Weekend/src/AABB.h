@@ -24,6 +24,16 @@ public:
 		Z = Interval(box0.Z, box1.Z);
 	}
 
+	AABB Pad()
+	{
+		float delta = 0.0001;
+		Interval newX = X.Size() >= delta ? X : X.Expand(delta);
+		Interval newY = Y.Size() >= delta ? Y : Y.Expand(delta);
+		Interval newZ = Z.Size() >= delta ? Z : Z.Expand(delta);
+
+		return AABB(newX, newY, newZ);
+	}
+
 	const Interval& Axis(int n) const
 	{
 		if (n == 1) return Y;

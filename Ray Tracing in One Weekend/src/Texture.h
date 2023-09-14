@@ -2,6 +2,7 @@
 
 #include "Utils.h"
 #include "Image.h"
+#include "Perlin.h"
 
 class Texture
 {
@@ -71,4 +72,23 @@ public:
 
 private:
 	Image m_Image;
+};
+
+class NoiseTexture : public Texture
+{
+public:
+	NoiseTexture() {}
+	NoiseTexture(float scale) : m_Scale(scale) {}
+
+	glm::vec4 Value(float u, float v, const glm::vec3& point) const override
+	{
+		glm::vec3 s = m_Scale * point;
+		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f) * 0.5f * (1.0f + sin(s.z + 10.0f * m_Noise.Turbulence(s)));
+		//glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f) * 0.5f * (1.0f + m_Noise.Noise(m_Scale * point));
+		return glm::vec4(color, 1.0f);
+	}
+
+private:
+	Perlin m_Noise;
+	float m_Scale;
 };
