@@ -27,7 +27,8 @@ int main()
 				{
 					glm::vec4 albedo = RandomColor() * RandomColor();
 					sphereMaterial = std::make_shared<Lambertian>(albedo);
-					world.Add(std::make_shared<Sphere>(center, 0.2, sphereMaterial));
+					glm::vec3 toCenter = center + glm::vec3(0.0f, RandomFloat(0.0f, 0.25f), 0.0f);
+					world.Add(std::make_shared<Sphere>(center, toCenter, 0.2, sphereMaterial));
 				}
 				else if (chooseMat < 0.95f)
 				{
@@ -64,7 +65,7 @@ int main()
 	camera.ImageHeight = 225;
 #endif
 
-	camera.SamplesPerPixel = 100;
+	camera.SamplesPerPixel = 1024;
 	camera.MaxBounces = 10;
 
 	camera.VerticalFOV = 20.0f;

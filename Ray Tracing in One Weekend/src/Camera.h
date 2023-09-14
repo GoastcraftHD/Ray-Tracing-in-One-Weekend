@@ -121,8 +121,9 @@ private:
 
 		glm::vec3 rayOrigin = DefocusAngle <= 0.0f ? m_CameraCenter : DefocusDiskSample();
 		glm::vec3 rayDirection = pixelSample - rayOrigin;
-		
-		return Ray(rayOrigin, rayDirection);
+		float rayTime = RandomFloat();
+
+		return Ray(rayOrigin, rayDirection, rayTime);
 	}
 
 	glm::vec3 DefocusDiskSample()

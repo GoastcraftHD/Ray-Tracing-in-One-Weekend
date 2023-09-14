@@ -25,7 +25,7 @@ public:
 		if (NearZero(scatterDirection))
 			scatterDirection = hit.Normal;
 
-		scattered = Ray(hit.Point, scatterDirection);
+		scattered = Ray(hit.Point, scatterDirection, inRay.Time());
 		attenuation = m_Albedo;
 
 		return true;
@@ -43,7 +43,7 @@ public:
 	bool Scatter(const Ray& inRay, const HitRecord& hit, glm::vec4& attenuation, Ray& scattered) const override
 	{
 		glm::vec3 reflected = glm::reflect(glm::normalize(inRay.Direction()), hit.Normal);
-		scattered = Ray(hit.Point, reflected + m_Fuzz * RandomUnitVector());
+		scattered = Ray(hit.Point, reflected + m_Fuzz * RandomUnitVector(), inRay.Time());
 		attenuation = m_Albedo;
 
 		return glm::dot(scattered.Direction(), hit.Normal) > 0.0f;
@@ -76,7 +76,7 @@ public:
 		else
 			direction = glm::refract(unitDirection, hit.Normal, refractionRatio);
 
-		scattered = Ray(hit.Point, direction);
+		scattered = Ray(hit.Point, direction, inRay.Time());
 
 		return true;
 	}
