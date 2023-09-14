@@ -2,16 +2,16 @@
 
 struct Interval
 {
-	double Min;
-	double Max;
+	float Min;
+	float Max;
 
 	Interval() : Min(Infinity), Max(-Infinity) {}
-	Interval(double min, double max) : Min(min), Max(max) {}
+	Interval(float min, float max) : Min(min), Max(max) {}
 
-	bool Constains(double x) const { return Min <= x && x <= Max; }
-	bool Surrounds(double x) const { return Min < x && x < Max; }
+	bool Constains(float x) const { return Min <= x && x <= Max; }
+	bool Surrounds(float x) const { return Min < x && x < Max; }
 
-	double Clamp(double x) const
+	float Clamp(float x) const
 	{
 		if (x < Min) return Min;
 		if (x > Max) return Max;

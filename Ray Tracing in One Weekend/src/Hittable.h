@@ -7,15 +7,15 @@ class Material;
 
 struct HitRecord
 {
-	Vec3 Point;
-	Vec3 Normal;
+	glm::vec3 Point;
+	glm::vec3 Normal;
 	std::shared_ptr<Material> Material;
-	double T;
+	float T;
 	bool FrontFace;
 
-	void SetFaceNormal(const Ray& ray, const Vec3& outwardNormal)
+	void SetFaceNormal(const Ray& ray, const glm::vec3& outwardNormal)
 	{
-		FrontFace = Dot(ray.Direction(), outwardNormal) < 0;
+		FrontFace = glm::dot(ray.Direction(), outwardNormal) < 0.0f;
 		Normal = FrontFace ? outwardNormal : -outwardNormal;
 	}
 };

@@ -26,7 +26,7 @@ project "Ray Tracing in One Weekend"
 	includedirs
 	{
 		"src",
-	--	"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}"
 	}
 
 	filter "system:windows"

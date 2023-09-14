@@ -1,0 +1,3 @@
+[submodule "Ray Tracing in One Weekend/vendor/glm"]
+	path = Ray Tracing in One Weekend/vendor/glm
+	url = git@github.com:g-truc/glm.git

@@ -20,7 +20,7 @@ public:
 	{
 		HitRecord tempHit;
 		bool hitAnything = false;
-		double closestSoFar = rayT.Max;
+		float closestSoFar = rayT.Max;
 
 		for (const std::shared_ptr<Hittable>& object : objects)
 		{
