@@ -25,6 +25,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["glm"] = "%{wks.location}/Ray Tracing in One Weekend/vendor/glm"
+IncludeDir["stb"] = "%{wks.location}/Ray Tracing in One Weekend/vendor/stb"
 
 group "Dependencies"
 	include "vendor/premake"

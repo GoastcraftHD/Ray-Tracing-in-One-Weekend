@@ -15,7 +15,9 @@ project "Ray Tracing in One Weekend"
 		"src/**.h",
 		"src/**.cpp",
 		"vendor/glm/glm/**.hpp",
-		"vendor/glm/glm/**.inl"
+		"vendor/glm/glm/**.inl",
+		"vendor/stb/**.h",
+		"vendor/stb/**.cpp"
 	}
 
 	defines
@@ -26,7 +28,8 @@ project "Ray Tracing in One Weekend"
 	includedirs
 	{
 		"src",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.stb}"
 	}
 
 	filter "system:windows"
