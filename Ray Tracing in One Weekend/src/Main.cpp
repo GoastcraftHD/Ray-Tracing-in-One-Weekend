@@ -5,13 +5,15 @@
 #include "Sphere.h"
 #include "Material.h"
 #include "BVH.h"
+#include "Texture.h"
 
-int main()
+void RandomSpheres(Camera camera)
 {
 	std::shared_ptr<Lambertian> groundMaterial = std::make_shared<Lambertian>(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
 
 	HittableList world;
-	world.Add(std::make_shared<Sphere>(glm::vec3(0.0f, -1000.0f, -1.0f), 1000.0f, groundMaterial));
+	std::shared_ptr<CheckerTexture> checker = std::make_shared<CheckerTexture>(0.32f, glm::vec4(0.2f, 0.3f, 0.1f, 1.0f), glm::vec4(0.9f, 0.9f, 0.9f, 1.0f));
+	world.Add(std::make_shared<Sphere>(glm::vec3(0.0f, -1000.0f, -1.0f), 1000.0f, std::make_shared<Lambertian>(checker)));
 
 	for (int a = -11; a < 11; a++)
 	{
@@ -58,6 +60,54 @@ int main()
 
 	world = HittableList(std::make_shared<BVHNode>(world));
 
+	camera.VerticalFOV = 20.0f;
+	camera.LookFrom = glm::vec3(13.0f, 2.0f, 3.0f);
+	camera.LookAt = glm::vec3(0.0f, 0.0f, 0.0f);
+	camera.ViewUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+	camera.DefocusAngle = 0.6f;
+	camera.FocusDistance = 10.0f;
+
+	camera.Render(world);
+}
+
+void TwoSpheres(Camera camera)
+{
+	HittableList world;
+
+	std::shared_ptr<CheckerTexture> checker = std::make_shared<CheckerTexture>(0.8f, glm::vec4(0.2f, 0.3f, 0.1f, 1.0f), glm::vec4(0.9f, 0.9f, 0.9f, 1.0f));
+
+	world.Add(std::make_shared<Sphere>(glm::vec3(0.0f, -10.0f, 0.0f), 10.0f, std::make_shared<Lambertian>(checker)));
+	world.Add(std::make_shared<Sphere>(glm::vec3(0.0f, 10.0f, 0.0f), 10.0f, std::make_shared<Lambertian>(checker)));
+
+	camera.VerticalFOV = 20.0f;
+	camera.LookFrom = glm::vec3(13.0f, 2.0f, 3.0f);
+	camera.LookAt = glm::vec3(0.0f, 0.0f, 0.0f);
+	camera.ViewUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+	camera.DefocusAngle = 0.0f;
+
+	camera.Render(world);
+}
+
+void Earth(Camera camera)
+{
+	std::shared_ptr<ImageTexture> earthTexture = std::make_shared<ImageTexture>("assets/textures/earthmap.jpg");
+	std::shared_ptr<Material> earthMaterial = std::make_shared<Lambertian>(earthTexture);
+	std::shared_ptr<Sphere> globe = std::make_shared<Sphere>(glm::vec3(0.0f, 0.0f, 0.0f), 2.0f, earthMaterial);
+
+	camera.VerticalFOV = 20.0f;
+	camera.LookFrom = glm::vec3(0.0f, 0.0f, 12.0f);
+	camera.LookAt = glm::vec3(0.0f, 0.0f, 0.0f);
+	camera.ViewUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+	camera.DefocusAngle = 0.0f;
+
+	camera.Render(HittableList(globe));
+}
+
+int main()
+{
 	Camera camera;
 
 #if 1 // High res toggle
@@ -68,16 +118,13 @@ int main()
 	camera.ImageHeight = 225;
 #endif
 
-	camera.SamplesPerPixel = 1024;
+	camera.SamplesPerPixel = 100;
 	camera.MaxBounces = 10;
 
-	camera.VerticalFOV = 20.0f;
-	camera.LookFrom = glm::vec3(13.0f, 2.0f, 3.0f);
-	camera.LookAt = glm::vec3(0.0f, 0.0f, 0.0f);
-	camera.ViewUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-	camera.DefocusAngle = 0.6f;
-	camera.FocusDistance = 10.0f;
-
-	camera.Render(world);
+	switch (3)
+	{
+		case 1: RandomSpheres(camera); break;
+		case 2: TwoSpheres(camera); break;
+		case 3: Earth(camera); break;
+	}
 }

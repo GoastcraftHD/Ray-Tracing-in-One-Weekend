@@ -2,6 +2,7 @@
 
 #include "Hittable.h"
 #include "Utils.h"
+#include "Texture.h"
 
 struct HitRecord;
 
@@ -16,7 +17,8 @@ public:
 class Lambertian : public Material
 {
 public:
-	Lambertian(const glm::vec4& albedo) : m_Albedo(albedo) {}
+	Lambertian(const glm::vec4& albedo) : m_Albedo(std::make_shared<SolidColorTexture>(albedo)) {}
+	Lambertian(std::shared_ptr<Texture> texture) : m_Albedo(texture) {}
 
 	bool Scatter(const Ray& inRay, const HitRecord& hit, glm::vec4& attenuation, Ray& scattered) const override
 	{
@@ -26,13 +28,13 @@ public:
 			scatterDirection = hit.Normal;
 
 		scattered = Ray(hit.Point, scatterDirection, inRay.Time());
-		attenuation = m_Albedo;
+		attenuation = m_Albedo->Value(hit.U, hit.V, hit.Point);
 
 		return true;
 	}
 
 private:
-	glm::vec4 m_Albedo;
+	std::shared_ptr<Texture> m_Albedo;
 };
 
 class Metal : public Material

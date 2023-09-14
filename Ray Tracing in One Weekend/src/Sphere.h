@@ -57,6 +57,7 @@ public:
 
 		glm::vec3 outwardNormal = (hit.Point - m_Center) / m_Radius;
 		hit.SetFaceNormal(ray, outwardNormal);
+		GetSphereUV(outwardNormal, hit.U, hit.V);
 
 		return true;
 	}
@@ -72,5 +73,14 @@ private:
 	glm::vec3 Center(float time) const
 	{
 		return m_Center + time * m_MoveVector;
+	}
+
+	static void GetSphereUV(const glm::vec3& point, float& u, float& v)
+	{
+		float theta = acos(-point.y);
+		float phi = atan2(-point.z, point.x) + Pi;
+
+		u = phi / (2 * Pi);
+		v = theta / Pi;
 	}
 };
