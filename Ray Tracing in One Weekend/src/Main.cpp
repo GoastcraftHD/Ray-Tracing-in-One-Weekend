@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "HittableList.h"
 #include "Sphere.h"
+#include "Quad.h"
 #include "Material.h"
 #include "BVH.h"
 #include "Texture.h"
@@ -68,6 +69,8 @@ void RandomSpheres(Camera camera)
 	camera.DefocusAngle = 0.6f;
 	camera.FocusDistance = 10.0f;
 
+	camera.BackgroundColor = glm::vec4(0.7f, 0.8f, 1.0f, 1.0f);
+
 	camera.Render(world);
 }
 
@@ -87,6 +90,8 @@ void TwoSpheres(Camera camera)
 
 	camera.DefocusAngle = 0.0f;
 
+	camera.BackgroundColor = glm::vec4(0.7f, 0.8f, 1.0f, 1.0f);
+
 	camera.Render(world);
 }
 
@@ -102,6 +107,8 @@ void Earth(Camera camera)
 	camera.ViewUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 	camera.DefocusAngle = 0.0f;
+
+	camera.BackgroundColor = glm::vec4(0.7f, 0.8f, 1.0f, 1.0f);
 
 	camera.Render(HittableList(globe));
 }
@@ -120,7 +127,60 @@ void TwoPerlinSpheres(Camera camera)
 	camera.ViewUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 	camera.DefocusAngle = 0.0f;
+
+	camera.BackgroundColor = glm::vec4(0.7f, 0.8f, 1.0f, 1.0f);
 	
+	camera.Render(world);
+}
+
+void Quads(Camera camera)
+{
+	HittableList world;
+
+	std::shared_ptr<Material> leftRed = std::make_shared<Lambertian>(glm::vec4(1.0f, 0.2f, 0.2f, 1.0f));
+	std::shared_ptr<Material> backGreen = std::make_shared<Lambertian>(glm::vec4(0.2f, 1.0f, 0.2f, 1.0f));
+	std::shared_ptr<Material> rightBlue = std::make_shared<Lambertian>(glm::vec4(0.2f, 0.2f, 1.0f, 1.0f));
+	std::shared_ptr<Material> upperOrange = std::make_shared<Lambertian>(glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
+	std::shared_ptr<Material> lowerTeal = std::make_shared<Lambertian>(glm::vec4(0.2f, 0.8f, 0.8f, 1.0f));
+
+	world.Add(std::make_shared<Quad>(glm::vec3(-3.0f, -2.0f, 5.0f), glm::vec3(0.0f, 0.0f, -4.0f), glm::vec3(0.0f, 4.0f, 0.0f), leftRed));
+	world.Add(std::make_shared<Quad>(glm::vec3(-2.0f, -2.0f, 0.0f), glm::vec3(4.0f, 0.0f, 0.0f), glm::vec3(0.0f, 4.0f, 0.0f), backGreen));
+	world.Add(std::make_shared<Quad>(glm::vec3(3.0f, -2.0f, 1.0f), glm::vec3(0.0f, 0.0f, 4.0f), glm::vec3(0.0f, 4.0f, 0.0f), rightBlue));
+	world.Add(std::make_shared<Quad>(glm::vec3(-2.0f, 3.0f, 1.0f), glm::vec3(4.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 4.0f), upperOrange));
+	world.Add(std::make_shared<Quad>(glm::vec3(-2.0f, -3.0f, 5.0f), glm::vec3(4.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -4.0f), lowerTeal));
+
+	camera.VerticalFOV = 80.0f;
+	camera.LookFrom = glm::vec3(0.0f, 0.0f, 9.0f);
+	camera.LookAt = glm::vec3(0.0f, 0.0f, 0.0f);
+	camera.ViewUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+	camera.DefocusAngle = 0.0f;
+
+	camera.BackgroundColor = glm::vec4(0.7f, 0.8f, 1.0f, 1.0f);
+
+	camera.Render(world);
+}
+
+void SimpleLight(Camera camera)
+{
+	HittableList world;
+
+	std::shared_ptr<Texture> pertext = std::make_shared<NoiseTexture>(4.0f);
+	world.Add(std::make_shared<Sphere>(glm::vec3(0.0f, -1000.0f, 0.0f), 1000.0f, std::make_shared<Lambertian>(pertext)));
+	world.Add(std::make_shared<Sphere>(glm::vec3(0.0f, 2.0f, 0.0f), 2.0f, std::make_shared<Lambertian>(pertext)));
+
+	std::shared_ptr<Material> diffLight = std::make_shared<DiffuseLight>(glm::vec4(4.0f, 4.0f, 4.0f, 1.0f));
+	world.Add(std::make_shared<Quad>(glm::vec3(3.0f, 1.0f, -2.0f), glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(0.0f, 2.0f, 0.0f), diffLight));
+
+	camera.VerticalFOV = 20.0f;
+	camera.LookFrom = glm::vec3(26.0f, 3.0f, 6.0f);
+	camera.LookAt = glm::vec3(0.0f, 2.0f, 0.0f);
+	camera.ViewUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+	camera.DefocusAngle = 0.0f;
+
+	camera.BackgroundColor = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
 	camera.Render(world);
 }
 
@@ -128,7 +188,7 @@ int main()
 {
 	Camera camera;
 
-#if 0 // High res toggle
+#if 1 // High res toggle
 	camera.ImageWidth = 1920;
 	camera.ImageHeight = 1080;
 #else
@@ -136,14 +196,16 @@ int main()
 	camera.ImageHeight = 225;
 #endif
 
-	camera.SamplesPerPixel = 100;
+	camera.SamplesPerPixel = 10000;
 	camera.MaxBounces = 10;
 
-	switch (4)
+	switch (6)
 	{
 		case 1: RandomSpheres(camera); break;
 		case 2: TwoSpheres(camera); break;
 		case 3: Earth(camera); break;
 		case 4: TwoPerlinSpheres(camera); break;
+		case 5: Quads(camera); break;
+		case 6: SimpleLight(camera); break;
 	}
 }

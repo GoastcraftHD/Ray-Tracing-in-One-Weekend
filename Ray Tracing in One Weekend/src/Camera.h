@@ -18,6 +18,7 @@ public:
 	int ImageHeight = 240;
 	int SamplesPerPixel = 10;
 	int MaxBounces = 10;
+	glm::vec4 BackgroundColor = glm::vec4(1.0f);
 
 	float VerticalFOV = 90;
 	glm::vec3 LookFrom = glm::vec3(0, 0, -1);
@@ -146,20 +147,19 @@ private:
 
 		HitRecord hit;
 
-		if (world.Hit(ray, Interval(0.001, Infinity), hit))
-		{
-			Ray scattered;
-			glm::vec4 attenuation;
+		if (!world.Hit(ray, Interval(0.001f, Infinity), hit))
+			return BackgroundColor;
 
-			if (hit.Material->Scatter(ray, hit, attenuation, scattered))
-				return attenuation * RayColor(scattered, depth - 1, world);
+		Ray scattered;
+		glm::vec4 attenuation;
+		glm::vec4 colorFromEmission = hit.Material->Emitted(hit.U, hit.V, hit.Point);
 
-			return glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		}
+		if (!hit.Material->Scatter(ray, hit, attenuation, scattered))
+			return colorFromEmission;
 
-		glm::vec3 unit_direction = glm::normalize(ray.Direction());
-		float a = 0.5 * (unit_direction.y + 1.0);
-		return (1.0f - a) * glm::vec4(1.0f, 1.0f, 1.0f, 1.0f) + a * glm::vec4(0.5f, 0.7f, 1.0f, 1.0f);
+		glm::vec4 colorFromScatter = attenuation * RayColor(scattered, depth - 1, world);
+
+		return colorFromEmission + colorFromScatter;
 	}
 
 	uint32_t PackColor(const glm::vec4& pixelColor, int samplesPerPixel)

@@ -12,6 +12,10 @@ public:
 	virtual ~Material() = default;
 
 	virtual bool Scatter(const Ray& inRay, const HitRecord& hit, glm::vec4& attenuation, Ray& scattered) const = 0;
+
+	virtual glm::vec4 Emitted(float u, float v, const glm::vec3& point) const {
+		return glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	}
 };
 
 class Lambertian : public Material
@@ -93,4 +97,24 @@ private:
 
 		return r0 + (1.0f - r0) * pow((1.0f - cosine), 5.0f);
 	}
+};
+
+class DiffuseLight : public Material
+{
+public:
+	DiffuseLight(std::shared_ptr<Texture> a) : m_Emit(a) {}
+	DiffuseLight(glm::vec4 color) : m_Emit(std::make_shared<SolidColorTexture>(color)) {}
+
+	bool Scatter(const Ray& inRay, const HitRecord& hit, glm::vec4& attenuation, Ray& scattered) const override
+	{
+		return false;
+	}
+
+	glm::vec4 Emitted(float u, float v, const glm::vec3& point) const override
+	{
+		return m_Emit->Value(u, v, point);
+	}
+
+private:
+	std::shared_ptr<Texture> m_Emit;
 };
