@@ -4,6 +4,7 @@
 
 #include "Utils.h"
 #include "Hittable.h"
+#include "HittableList.h"
 
 class Quad : public Hittable
 {
@@ -74,3 +75,24 @@ private:
 	float m_D;
 	glm::vec3 m_W;
 };
+
+inline std::shared_ptr<Hittable> Box(const glm::vec3& a, const glm::vec3& b, std::shared_ptr<Material> material)
+{
+	std::shared_ptr<HittableList> sides = std::make_shared<HittableList>();
+
+	glm::vec3 min = glm::vec3(fmin(a.x, b.x), fmin(a.y, b.y), fmin(a.z, b.z));
+	glm::vec3 max = glm::vec3(fmax(a.x, b.x), fmax(a.y, b.y), fmax(a.z, b.z));
+
+	glm::vec3 dx = glm::vec3(max.x - min.x, 0.0f, 0.0f);
+	glm::vec3 dy = glm::vec3(0.0f, max.y - min.y, 0.0f);
+	glm::vec3 dz = glm::vec3(0.0f, 0.0f, max.z - min.z);
+
+	sides->Add(std::make_shared<Quad>(glm::vec3(min.x, min.y, max.z), dx, dy, material));
+	sides->Add(std::make_shared<Quad>(glm::vec3(max.x, min.y, max.z), -dz, dy, material));
+	sides->Add(std::make_shared<Quad>(glm::vec3(max.x, min.y, min.z), -dx, dy, material));
+	sides->Add(std::make_shared<Quad>(glm::vec3(min.x, min.y, min.z), dz, dy, material));
+	sides->Add(std::make_shared<Quad>(glm::vec3(min.x, max.y, max.z), dx, -dz, material));
+	sides->Add(std::make_shared<Quad>(glm::vec3(min.x, min.y, min.z), dx, dz, material));
+
+	return sides;
+}

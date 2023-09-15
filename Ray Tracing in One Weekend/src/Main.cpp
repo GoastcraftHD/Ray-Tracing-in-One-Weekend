@@ -184,22 +184,60 @@ void SimpleLight(Camera camera)
 	camera.Render(world);
 }
 
+void CornellBox(Camera camera)
+{
+	HittableList world;
+
+	std::shared_ptr<Material> red = std::make_shared<Lambertian>(glm::vec4(0.65f, 0.05f, 0.05f, 1.0f));
+	std::shared_ptr<Material> white = std::make_shared<Lambertian>(glm::vec4(0.73f, 0.73f, 0.73f, 1.0f));
+	std::shared_ptr<Material> green = std::make_shared<Lambertian>(glm::vec4(0.12f, 0.45f, 0.15f, 1.0f));
+	std::shared_ptr<Material> light = std::make_shared<DiffuseLight>(glm::vec4(15.0f, 15.0f, 15.0f, 1.0f));
+
+	world.Add(std::make_shared<Quad>(glm::vec3(555.0f, 0.0f, 0.0f), glm::vec3(0.0f, 555.0f, 0.0f), glm::vec3(0.0f, 0.0f, 555.0f), green));
+	world.Add(std::make_shared<Quad>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 555.0f, 0.0f), glm::vec3(0.0f, 0.0f, 555.0f), red));
+	world.Add(std::make_shared<Quad>(glm::vec3(343.0f, 554.0f, 332.0f), glm::vec3(-130.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 105.0f), light));
+	world.Add(std::make_shared<Quad>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(555.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 555.0f), white));
+	world.Add(std::make_shared<Quad>(glm::vec3(555.0f, 555.0f, 555.0f), glm::vec3(-555.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -555.0f), white));
+	world.Add(std::make_shared<Quad>(glm::vec3(0.0f, 0.0f, 555.0f), glm::vec3(555.0f, 0.0f, 0.0f), glm::vec3(0.0f, 555.0f, 0.0f), white));
+
+	std::shared_ptr<Hittable> box1 = Box(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(165.0f, 330.0f, 165.0f), white);
+	box1 = std::make_shared<RotateY>(box1, 15.0f);
+	box1 = std::make_shared<Translate>(box1, glm::vec3(265.0f, 0.0f, 295.0f));
+	world.Add(box1);
+
+	std::shared_ptr<Hittable> box2 = Box(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(165.0f, 165.0f, 165.0f), white);
+	box2 = std::make_shared<RotateY>(box2, -18.0f);
+	box2 = std::make_shared<Translate>(box2, glm::vec3(130.0f, 0.0f, 65.0f));
+	world.Add(box2);
+
+	camera.VerticalFOV = 40.0f;
+	camera.LookFrom = glm::vec3(278.0f, 278.0f, -800.0f);
+	camera.LookAt = glm::vec3(278.0f, 278.0f, 0.0f);
+	camera.ViewUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+	camera.DefocusAngle = 0.0f;
+
+	camera.BackgroundColor = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+	camera.Render(world);
+}
+
 int main()
 {
 	Camera camera;
 
-#if 1 // High res toggle
+#if 0 // High res toggle
 	camera.ImageWidth = 1920;
 	camera.ImageHeight = 1080;
 #else
 	camera.ImageWidth = 400;
-	camera.ImageHeight = 225;
+	camera.ImageHeight = 400;
 #endif
 
-	camera.SamplesPerPixel = 10000;
+	camera.SamplesPerPixel = 100000;
 	camera.MaxBounces = 10;
 
-	switch (6)
+	switch (7)
 	{
 		case 1: RandomSpheres(camera); break;
 		case 2: TwoSpheres(camera); break;
@@ -207,5 +245,6 @@ int main()
 		case 4: TwoPerlinSpheres(camera); break;
 		case 5: Quads(camera); break;
 		case 6: SimpleLight(camera); break;
+		case 7: CornellBox(camera); break;
 	}
 }

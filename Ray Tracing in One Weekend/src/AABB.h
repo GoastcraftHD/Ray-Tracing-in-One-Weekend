@@ -64,3 +64,13 @@ public:
 		return true;
 	}
 };
+
+AABB operator+(const AABB& bbox, const glm::vec3& offset)
+{
+	return AABB(bbox.X + offset.x, bbox.Y + offset.y, bbox.Z + offset.z);
+}
+
+AABB operator+(const glm::vec3& offset, const AABB& bbox)
+{
+	return bbox + offset;
+}

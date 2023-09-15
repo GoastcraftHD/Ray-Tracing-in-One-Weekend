@@ -35,3 +35,13 @@ struct Interval
 
 const static Interval Empty(Infinity, -Infinity);
 const static Interval Universe(-Infinity, Infinity);
+
+Interval operator+(const Interval& ival, float displacement)
+{
+	return Interval(ival.Min + displacement, ival.Max + displacement);
+}
+
+Interval operator+(float displacement, const Interval& ival)
+{
+	return ival + displacement;
+}
