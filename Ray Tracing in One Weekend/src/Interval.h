@@ -33,8 +33,8 @@ struct Interval
 	static const Interval Empty, Universe;
 };
 
-const static Interval Empty(Infinity, -Infinity);
-const static Interval Universe(-Infinity, Infinity);
+const Interval Interval::Empty(Infinity, -Infinity);
+const Interval Interval::Universe(-Infinity, Infinity);
 
 Interval operator+(const Interval& ival, float displacement)
 {
